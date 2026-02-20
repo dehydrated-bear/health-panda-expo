@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────────────── */
+:root {
+  /* Brand colours */
+  --clr-blue: #8CE4FF;
+  --clr-yellow: #FEEE91;
+  --clr-orange: #FFA239;
+  --clr-red: #FF5656;
+
+  /* Backgrounds */
+  --clr-bg: #FAFCFF;
+  --clr-surface: #F0F8FF;
+  --clr-card: #FFFFFF;
+  --clr-dark: #1A1A2E;
+  --clr-dark-2: #16213E;
+
+  /* Borders */
+  --clr-border: rgba(140, 228, 255, 0.35);
+  --clr-border-strong: rgba(140, 228, 255, 0.7);
+
+  /* Gradients */
+  --grad-primary: linear-gradient(135deg, #8CE4FF 0%, #FFA239 100%);
+  --grad-hero: linear-gradient(145deg, #E8F9FF 0%, #FFF7E0 50%, #FFE8D6 100%);
+  --grad-btn: linear-gradient(135deg, #FFA239 0%, #FF5656 100%);
+  --grad-btn-blue: linear-gradient(135deg, #8CE4FF 0%, #60C8F0 100%);
+  --grad-card-1: linear-gradient(145deg, #E8F9FF, #D0F0FF);
+  --grad-card-2: linear-gradient(145deg, #FFF7D6, #FFF0A0);
+  --grad-card-3: linear-gradient(145deg, #FFE8CC, #FFD4A0);
+  --grad-card-4: linear-gradient(145deg, #FFE0E0, #FFCACA);
+  --grad-nav: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.95) 100%);
+
+  /* Text */
+  --text-primary: #1A1A2E;
+  --text-secondary: #6B7280;
+  --text-light: #9CA3AF;
+
+  /* Misc */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-xl: 48px;
+
+  --shadow-blue: 0 8px 32px rgba(140, 228, 255, 0.4);
+  --shadow-orange: 0 8px 32px rgba(255, 162, 57, 0.35);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.14);
+
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Reset ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--clr-bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--clr-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clr-orange);
+  border-radius: 999px;
+}
+
+/* ── Utilities ────────────────────────────────────────────────────── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.gradient-text-warm {
+  background: var(--grad-btn);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-blue {
+  background: linear-gradient(135deg, #4BB8E8 0%, #0090C0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Animations ───────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+
+  50% {
+    transform: translateY(-16px) rotate(2deg);
+  }
+}
+
+@keyframes blob {
+
+  0%,
+  100% {
+    border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%;
+  }
+
+  50% {
+    border-radius: 40% 60% 30% 70% / 60% 40% 70% 50%;
+  }
+}
+
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 162, 57, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 16px rgba(255, 162, 57, 0);
+  }
+}
+
+@keyframes badge-shine {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.7s ease both;
+}
+
+.fade-up-delay-1 {
+  animation: fadeUp 0.7s 0.15s ease both;
+}
+
+.fade-up-delay-2 {
+  animation: fadeUp 0.7s 0.3s ease both;
+}
+
+.fade-up-delay-3 {
+  animation: fadeUp 0.7s 0.45s ease both;
+}
+
+/* ── Noise texture overlay ────────────────────────────────────────── */
+.noise-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
