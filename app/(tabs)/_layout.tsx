@@ -12,11 +12,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { PandaColors as C } from '@/constants/theme';
 
 const TABS = [
-  { name: 'leaderboard', icon: 'trophy-outline', iconActive: 'trophy', label: 'Ranks' },
-  { name: 'food', icon: 'nutrition-outline', iconActive: 'nutrition', label: 'Food' },
+  { name: 'leaderboard', icon: 'stats-chart-outline', iconActive: 'stats-chart', label: 'Ranks' },
+  { name: 'food', icon: 'restaurant-outline', iconActive: 'restaurant', label: 'Food' },
   { name: 'index', label: '', center: true },
-  { name: 'exercise', icon: 'barbell-outline', iconActive: 'barbell', label: 'Train' },
-  { name: 'profile', icon: 'person-circle-outline', iconActive: 'person-circle', label: 'Profile' },
+  { name: 'exercise', icon: 'fitness-outline', iconActive: 'fitness', label: 'Train' },
+  { name: 'profile', icon: 'person-outline', iconActive: 'person', label: 'Profile' },
 ];
 
 const PANDA = 52;
@@ -28,12 +28,23 @@ function CustomTabBar({ state, navigation }: any) {
     <View style={[s.outer, { paddingBottom: insets.bottom || 12 }]}>
       <View style={s.bar}>
         {TABS.map((tab) => {
-          const routeIdx = state.routes.findIndex((r: any) => r.name === tab.name);
+          // Find the route in the navigation state that matches this tab's name
+          const routeIdx = state.routes.findIndex((r: any) =>
+            r.name === tab.name || (tab.name === 'index' && r.name.toLowerCase().includes('index'))
+          );
           const focused = state.index === routeIdx;
 
           const onPress = () => {
-            const event = navigation.emit({ type: 'tabPress', target: state.routes[routeIdx]?.key, canPreventDefault: true });
-            if (!focused && !event.defaultPrevented) navigation.navigate(state.routes[routeIdx]?.name ?? tab.name);
+            const route = state.routes[routeIdx];
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route?.key || tab.name,
+              canPreventDefault: true
+            });
+
+            if (!focused && !event.defaultPrevented) {
+              navigation.navigate(route?.name ?? tab.name);
+            }
           };
 
           // ── Centre panda ────────────────────────────────────────────
@@ -55,8 +66,8 @@ function CustomTabBar({ state, navigation }: any) {
               <View style={[s.iconCircle, focused && s.iconCircleActive]}>
                 <Ionicons
                   name={(focused ? tab.iconActive : tab.icon) as any}
-                  size={20}
-                  color={focused ? '#fff' : 'rgba(255,255,255,0.4)'}
+                  size={24}
+                  color={focused ? '#fff' : 'rgba(255,255,255,0.7)'}
                 />
               </View>
               <Text style={[s.lbl, focused && s.lblActive]}>{tab.label}</Text>
