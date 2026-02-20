@@ -9,6 +9,7 @@ export default function OnboardingLayout() {
             <Stack.Screen name="step4-weight" />
             <Stack.Screen name="step5-bodytype" />
             <Stack.Screen name="step6-goal" />
+            <Stack.Screen name="step6b-target" />
             <Stack.Screen name="step7-activity" />
         </Stack>
     );

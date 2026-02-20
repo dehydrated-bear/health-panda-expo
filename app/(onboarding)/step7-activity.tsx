@@ -18,7 +18,7 @@ export default function Step7Activity() {
 
     return (
         <OnboardingShell
-            step={7}
+            step={8}
             title="Activity level"
             pandaSpeech={activeLevel
                 ? `${activeLevel.label} — I'll factor this into your daily targets.`

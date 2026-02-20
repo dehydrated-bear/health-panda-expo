@@ -1,5 +1,5 @@
 /**
- * Welcome Screen — clean, panda on white so background matches
+ * Welcome Screen — panda intro, cool gray bg matching main app
  */
 import React, { useEffect } from 'react';
 import {
@@ -40,8 +40,8 @@ export default function WelcomeScreen() {
         transform: [{ translateY: pandaY.value + floatY.value }],
         opacity: pandaO.value,
     }));
-    const textStyle = useAnimatedStyle(() => ({ opacity: textO.value }));
-    const btnStyle = useAnimatedStyle(() => ({ opacity: btnO.value }));
+    const textStyle = useAnimatedStyle(() => ({ opacity: textO.value, transform: [{ translateY: (1 - textO.value) * 12 }] }));
+    const btnStyle = useAnimatedStyle(() => ({ opacity: btnO.value, transform: [{ translateY: (1 - btnO.value) * 12 }] }));
 
     return (
         <View style={s.root}>
@@ -112,7 +112,7 @@ export default function WelcomeScreen() {
 }
 
 const s = StyleSheet.create({
-    root: { flex: 1, backgroundColor: '#F0F7FF' },
+    root: { flex: 1, backgroundColor: '#EEF2F7' },
 
     topArea: { position: 'absolute', top: 0, left: 0, right: 0, height: SH * 0.52, backgroundColor: '#F0F7FF' },
 
@@ -144,7 +144,7 @@ const s = StyleSheet.create({
         position: 'absolute',
         width: 200, height: 200, borderRadius: 100,
         // Gradual radial feel — just a very light tinted circle
-        backgroundColor: '#EEF9FF',
+        backgroundColor: '#EEF2F7',
     },
     panda: { width: 210, height: 210, zIndex: 1 },
 
@@ -162,12 +162,12 @@ const s = StyleSheet.create({
     headline: { fontSize: 30, fontWeight: '800', color: '#111', lineHeight: 38, marginBottom: 8 },
     tagline: { fontSize: 14, color: '#777', lineHeight: 22, marginBottom: 18 },
 
-    featureRow: { flexDirection: 'row', gap: 10 },
+    featureRow: { flexDirection: 'row', justifyContent: 'center', gap: 10, marginBottom: 28 },
     featurePill: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 20, borderWidth: 1 },
     featureDot: { width: 6, height: 6, borderRadius: 3 },
     featureLabel: { fontSize: 12, fontWeight: '700' },
 
-    buttons: { gap: 12 },
+    buttons: { gap: 14 },
     primaryBtn: {
         backgroundColor: C.orange, borderRadius: 14,
         paddingVertical: 17, alignItems: 'center',
