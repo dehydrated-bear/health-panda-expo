@@ -1,5 +1,5 @@
 /**
- * Sign-In Screen — email only, no Google
+ * Sign-Up Screen — Create new account
  */
 import React, { useState } from 'react';
 import {
@@ -16,13 +16,16 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const { height: SH } = Dimensions.get('window');
 
-export default function SignInScreen() {
+export default function SignUpScreen() {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [focusedField, setFocused] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     
-    const { login } = useAuth();
+    const { register } = useAuth();
+
     const floatY = useSharedValue(0);
     React.useEffect(() => {
         floatY.value = withRepeat(
@@ -34,23 +37,31 @@ export default function SignInScreen() {
     }, []);
     const pandaStyle = useAnimatedStyle(() => ({ transform: [{ translateY: floatY.value }] }));
 
-    const handleSignIn = async () => {
+    const valid = name.length >= 2 && email.includes('@') && password.length >= 6 && password === confirmPassword;
+
+    const handleSignUp = async () => {
         if (!valid || isLoading) return;
+        
+        if (password !== confirmPassword) {
+            Alert.alert('Error', 'Passwords do not match');
+            return;
+        }
         
         setIsLoading(true);
         try {
-            await login(email, password);
-            Alert.alert('Success', 'Logged in successfully!');
-            // Navigate to tabs after successful login
-            router.replace('/(tabs)');
+            await register(name, email, password);
+            Alert.alert('Success', 'Account created successfully!', [
+                {
+                    text: 'Continue',
+                    onPress: () => router.replace('/(onboarding)/step1-name'),
+                }
+            ]);
         } catch (error: any) {
-            Alert.alert('Login Failed', error.message || 'Invalid email or password');
+            Alert.alert('Registration Failed', error.message || 'Could not create account');
         } finally {
             setIsLoading(false);
         }
     };
-
-    const valid = email.includes('@') && password.length >= 6;
 
     return (
         <View style={s.root}>
@@ -72,10 +83,24 @@ export default function SignInScreen() {
 
             {/* White bottom sheet */}
             <View style={s.sheet}>
-                <Text style={s.title}>Sign in</Text>
-                <Text style={s.sub}>Welcome back to Health Panda</Text>
+                <Text style={s.title}>Create Account</Text>
+                <Text style={s.sub}>Join Health Panda today</Text>
 
                 <View style={s.form}>
+                    <View style={s.field}>
+                        <Text style={s.label}>NAME</Text>
+                        <TextInput
+                            style={[s.input, focusedField === 'name' && s.inputFocused]}
+                            placeholder="John Doe"
+                            placeholderTextColor="#C8C8C8"
+                            value={name}
+                            onChangeText={setName}
+                            onFocus={() => setFocused('name')}
+                            onBlur={() => setFocused(null)}
+                            autoFocus
+                        />
+                    </View>
+
                     <View style={s.field}>
                         <Text style={s.label}>EMAIL</Text>
                         <TextInput
@@ -88,7 +113,6 @@ export default function SignInScreen() {
                             onBlur={() => setFocused(null)}
                             keyboardType="email-address"
                             autoCapitalize="none"
-                            autoFocus
                         />
                     </View>
 
@@ -106,32 +130,40 @@ export default function SignInScreen() {
                         />
                     </View>
 
-                    <TouchableOpacity style={s.forgotRow}>
-                        <Text style={s.forgot}>Forgot password?</Text>
-                    </TouchableOpacity>
+                    <View style={s.field}>
+                        <Text style={s.label}>CONFIRM PASSWORD</Text>
+                        <TextInput
+                            style={[s.input, focusedField === 'confirm' && s.inputFocused]}
+                            placeholder="••••••••"
+                            placeholderTextColor="#C8C8C8"
+                            value={confirmPassword}
+                            onChangeText={setConfirmPassword}
+                            onFocus={() => setFocused('confirm')}
+                            onBlur={() => setFocused(null)}
+                            secureTextEntry
+                        />
+                    </View>
                 </View>
 
                 <TouchableOpacity
-                    style={[s.btn, !valid && { opacity: 0.45 }]}
-                    onPress={() => valid && router.replace('/(onboarding)/step1-name')}
+                    style={[s.btn, (!valid || isLoading) && { opacity: 0.45 }]}
+                    onPress={handleSignUp}
                     activeOpacity={valid ? 0.88 : 1}
+                    disabled={isLoading}
                 >
-                    <Text style={s.btnText}>Sign In</Text>
+                    {isLoading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={s.btnText}>Sign Up</Text>
+                    )}
                 </TouchableOpacity>
 
                 <View style={s.signupRow}>
-                    <Text style={s.signupText}>Don't have an account? </Text>
-                    <TouchableOpacity onPress={() => router.replace('/(onboarding)/step1-name')}>
-                        <Text style={[s.signupText, { color: C.orange, fontWeight: '700' }]}>Create one</Text>
+                    <Text style={s.signupText}>Already have an account? </Text>
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Text style={[s.signupText, { color: C.orange, fontWeight: '700' }]}>Sign In</Text>
                     </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity
-                    style={s.guestBtn}
-                    onPress={() => router.replace('/(tabs)')}
-                >
-                    <Text style={s.guestText}>Continue as Guest</Text>
-                </TouchableOpacity>
             </View>
         </View>
     );
@@ -151,27 +183,27 @@ const s = StyleSheet.create({
 
     pandaArea: {
         alignItems: 'center',
-        paddingTop: Platform.OS === 'ios' ? 105 : 80,
-        height: SH * 0.38,
+        paddingTop: Platform.OS === 'ios' ? 80 : 60,
+        height: SH * 0.32,
         justifyContent: 'center',
     },
     pandaBg: {
-        position: 'absolute', width: 150, height: 150, borderRadius: 75,
+        position: 'absolute', width: 130, height: 130, borderRadius: 65,
         backgroundColor: '#EEF9FF',
     },
-    panda: { width: 160, height: 160 },
+    panda: { width: 140, height: 140 },
 
     sheet: {
         flex: 1, backgroundColor: '#fff',
         borderTopLeftRadius: 32, borderTopRightRadius: 32,
-        paddingHorizontal: 28, paddingTop: 32,
+        paddingHorizontal: 28, paddingTop: 28,
         paddingBottom: Platform.OS === 'ios' ? 44 : 28,
         shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 16, shadowOffset: { width: 0, height: -4 },
     },
     title: { fontSize: 26, fontWeight: '800', color: '#111', marginBottom: 4 },
-    sub: { fontSize: 14, color: '#888', marginBottom: 28 },
+    sub: { fontSize: 14, color: '#888', marginBottom: 24 },
 
-    form: { gap: 20, marginBottom: 8 },
+    form: { gap: 18, marginBottom: 8 },
     field: { gap: 7 },
     label: { fontSize: 10, fontWeight: '800', color: '#AAA', letterSpacing: 1.5 },
     input: {
@@ -180,9 +212,6 @@ const s = StyleSheet.create({
         fontSize: 15, color: '#111', backgroundColor: '#FAFAFA',
     },
     inputFocused: { borderColor: C.orange, backgroundColor: '#fff' },
-
-    forgotRow: { alignSelf: 'flex-end' },
-    forgot: { fontSize: 13, color: C.orange, fontWeight: '600' },
 
     btn: {
         backgroundColor: C.orange, borderRadius: 14,
@@ -194,7 +223,4 @@ const s = StyleSheet.create({
 
     signupRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
     signupText: { fontSize: 14, color: '#AAA' },
-
-    guestBtn: { alignItems: 'center', paddingVertical: 12, marginTop: 8 },
-    guestText: { fontSize: 13, color: '#CCC', fontWeight: '600' },
 });

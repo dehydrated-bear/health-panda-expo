@@ -4,10 +4,11 @@
 import React from 'react';
 import {
     View, Text, ScrollView, StyleSheet,
-    TouchableOpacity, Image, Platform,
+    TouchableOpacity, Image, Platform, Alert,
 } from 'react-native';
 import { PandaColors as C } from '@/constants/theme';
 import { router } from 'expo-router';
+import { useAuth } from '@/contexts/AuthContext';
 
 const STATS = [
     { label: 'Current', value: '72.4 kg', icon: '⚖️', color: C.orange },
@@ -36,6 +37,26 @@ const SETTINGS = [
 ];
 
 export default function ProfileScreen() {
+    const { logout, isLoggedIn } = useAuth();
+
+    const handleSignOut = async () => {
+        Alert.alert(
+            'Sign Out',
+            'Are you sure you want to sign out?',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Sign Out',
+                    style: 'destructive',
+                    onPress: async () => {
+                        await logout();
+                        router.replace('/(auth)/welcome');
+                    }
+                }
+            ]
+        );
+    };
+
     return (
         <View style={{ flex: 1, backgroundColor: '#F8F9FB' }}>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
@@ -123,7 +144,7 @@ export default function ProfileScreen() {
                 <View style={s.section}>
                     <TouchableOpacity
                         style={s.signOutBtn}
-                        onPress={() => router.replace('/(auth)/welcome')}
+                        onPress={handleSignOut}
                     >
                         <Text style={s.signOutText}>Sign Out</Text>
                     </TouchableOpacity>
